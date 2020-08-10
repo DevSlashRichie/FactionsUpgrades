@@ -46,7 +46,7 @@ public final class FactionsUpgrades extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        factionsHandler.saveFactions();
     }
 
     @Override

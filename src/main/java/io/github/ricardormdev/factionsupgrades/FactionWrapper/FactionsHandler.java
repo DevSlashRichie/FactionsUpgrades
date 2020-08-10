@@ -40,7 +40,7 @@ public class FactionsHandler {
 
                 if(SettingsManager.getData().contains("Factions." + factionId + ".addons")) {
                     for (String addonId : SettingsManager.getData().<ConfigurationSection>get("Factions." + factionId + ".addons").getKeys(false)) {
-                        int tier = SettingsManager.getConfyg().get("Factions." + factionId + ".addons." + addonId);
+                        int tier = SettingsManager.getData().get("Factions." + factionId + ".addons." + addonId);
                         AddonConfiguration addonConfiguration = FactionsUpgrades.getInstance().getAddonHandler().getAddon(addonId);
 
                         if(addonConfiguration != null) {
@@ -70,6 +70,10 @@ public class FactionsHandler {
                     addonFactions.add(addonFaction);
                     return addonFaction;
                 });
+    }
+
+    public void saveFactions() {
+        addonFactions.forEach(AddonFaction::save);
     }
 
 }

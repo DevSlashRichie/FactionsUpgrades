@@ -44,7 +44,7 @@ public class AddonFaction {
 
     public void save() {
         for (Addon addon : addons) {
-            SettingsManager.getData().set("Factions." + faction.getId() + ".addons." + addon.getId(), addon.getTier());
+            SettingsManager.getData().set("Factions." + faction.getId() + ".addons." + addon.getId(), addon.getTier().getLevel());
         }
     }
 

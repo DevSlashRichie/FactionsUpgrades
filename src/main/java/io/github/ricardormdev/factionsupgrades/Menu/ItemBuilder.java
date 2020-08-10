@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -112,7 +113,7 @@ public class ItemBuilder {
     public ItemBuilder setLore(int index, String text) {
         if(this.lore == null) lore = new ArrayList<>();
 
-        this.lore.set(index, text.replace("&", "§"));
+        this.lore.set(index, ChatColor.translateAlternateColorCodes('&', text));
         return this;
     }
 
@@ -143,7 +144,7 @@ public class ItemBuilder {
      */
     public ItemBuilder addLoreLine(String text) {
         if(this.lore == null) lore = new ArrayList<>();
-        this.lore.add(text.replace("&", "§"));
+        this.lore.add(ChatColor.translateAlternateColorCodes('&', text));
         return this;
     }
 
@@ -163,6 +164,28 @@ public class ItemBuilder {
     }
 
     /**
+     * Applies an argument to the message with the given name. All occurrences
+     * of the '<name>' will be replaced with the string value of the argument.
+     */
+    public ItemBuilder arg(String name, Object arg) {
+        displayName = displayName.replace("{" + name + "}", String.valueOf(arg));
+        lore = lore.stream().map(s -> s.replace("{" + name + "}", String.valueOf(arg))).collect(Collectors.toList());
+        return this;
+    }
+
+    /**
+     * Applies multiple arguments to the message in a varargs form. Elements in
+     * the array with even indexes are considered to be the argument name, while
+     * those with odd numbers are the argument itself.
+     */
+    public ItemBuilder args(Object... args) {
+        for (int i = 1; i < args.length; i += 2) {
+            arg(String.valueOf(args[i-1]), args[i]);
+        }
+        return this;
+    }
+
+    /**
      *
      * Finally build the item into an itemstack.
      *
@@ -175,7 +198,7 @@ public class ItemBuilder {
         ItemStack item = new ItemStack(material, quantity, (short) 1);
         ItemMeta meta = item.getItemMeta();
         if(displayName != null)
-            meta.setDisplayName(displayName.replace("&", "§"));
+            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
 
         if(lore != null && !lore.isEmpty())
             meta.setLore(lore);
