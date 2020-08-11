@@ -7,13 +7,16 @@ import com.massivecraft.factions.Factions;
 import io.github.ricardormdev.factionsupgrades.FactionsUpgrades;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonConfiguration;
+import io.github.ricardormdev.factionsupgrades.Modules.Tier;
 import io.github.ricardormdev.factionsupgrades.SettingsManager;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class FactionsHandler {
 
@@ -42,15 +45,41 @@ public class FactionsHandler {
                 if(SettingsManager.getData().contains("Factions." + factionId + ".addons")) {
                     for (String addonId : SettingsManager.getData().<ConfigurationSection>get("Factions." + factionId + ".addons").getKeys(false)) {
                         int tier = SettingsManager.getData().get("Factions." + factionId + ".addons." + addonId);
+
                         AddonConfiguration addonConfiguration = FactionsUpgrades.getInstance().getAddonHandler().getAddon(addonId);
 
-                        if(addonConfiguration != null) {
-                            Addon addon = (Addon) addonConfiguration.getAddonInterface()
-                                    .getConstructors()[0]
-                                    .newInstance(addonId, faction, addonConfiguration.getTier(tier));
-                            addon.setConfiguration(addonConfiguration);
-                            addonFaction.addAddon(addon);
+                        if(addonConfiguration == null) {
+                            SettingsManager.getData().set("Factions." + factionId + ".addons." + addonId, null);
+                            continue;
                         }
+
+
+                        Tier t = addonConfiguration.getTier(tier);
+
+                        if(t == null) {
+                            Tier any = null;
+
+                            for (Tier addonConfigurationTier : addonConfiguration.getTiers().stream().sorted(Comparator
+                                    .comparingInt(Tier::getLevel).reversed()).collect(Collectors.toList())) {
+                                if(addonConfigurationTier.getLevel() < tier) {
+                                    any = addonConfigurationTier;
+                                }
+                            }
+
+                            if(any == null) {
+                                SettingsManager.getData().set("Factions." + factionId + ".addons." + addonId, null);
+                                continue;
+                            } else {
+                                SettingsManager.getData().set("Factions." + factionId + ".addons." + addonId, any.getLevel());
+                                t = any;
+                            }
+                        }
+
+                        Addon addon = (Addon) addonConfiguration.getAddonInterface()
+                                .getConstructors()[0]
+                                .newInstance(addonId, faction, t);
+                        addon.setConfiguration(addonConfiguration);
+                        addonFaction.addAddon(addon);
 
                     }
                 }

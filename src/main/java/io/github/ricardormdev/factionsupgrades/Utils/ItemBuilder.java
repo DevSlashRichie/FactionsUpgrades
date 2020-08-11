@@ -12,8 +12,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -45,6 +47,39 @@ public class ItemBuilder {
     public ItemBuilder() {
         this.quantity = 1;
         this.data = 0;
+    }
+
+    public static ItemStack of(Material material) {
+        return new ItemBuilder().setMaterial(material).setQuantity(1).build();
+    }
+    public static ItemStack of(Material material, String text, String... lore) {
+        ItemBuilder itemBuilder =  new ItemBuilder().setMaterial(material).setQuantity(1)
+                .setDisplayName(text);
+        if(lore != null && lore.length > 0)
+            itemBuilder.setLore(Arrays.asList(lore));
+        return itemBuilder.build();
+    }
+
+    /**
+     * Applies an argument to the message with the given name. All occurrences
+     * of the '<name>' will be replaced with the string value of the argument.
+     */
+    public ItemBuilder arg(String name, Object arg) {
+        displayName = displayName.replace("{" + name + "}", String.valueOf(arg));
+        lore = lore.stream().map(s -> s.replace("{" + name + "}", String.valueOf(arg))).collect(Collectors.toList());
+        return this;
+    }
+
+    /**
+     * Applies multiple arguments to the message in a varargs form. Elements in
+     * the array with even indexes are considered to be the argument name, while
+     * those with odd numbers are the argument itself.
+     */
+    public ItemBuilder args(Object... args) {
+        for (int i = 1; i < args.length; i += 2) {
+            arg(String.valueOf(args[i-1]), args[i]);
+        }
+        return this;
     }
 
     /**

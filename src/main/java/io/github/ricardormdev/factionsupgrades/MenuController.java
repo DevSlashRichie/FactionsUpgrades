@@ -1,13 +1,13 @@
 package io.github.ricardormdev.factionsupgrades;
 
 import io.github.ricardormdev.factionsupgrades.FactionWrapper.AddonFaction;
-import io.github.ricardormdev.factionsupgrades.Menu.ItemBuilder;
 import io.github.ricardormdev.factionsupgrades.Menu.Menu;
 import io.github.ricardormdev.factionsupgrades.Menu.MenuItem;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonConfiguration;
 import io.github.ricardormdev.factionsupgrades.Modules.Tier;
 import io.github.ricardormdev.factionsupgrades.Utils.EconomyUtils;
+import io.github.ricardormdev.factionsupgrades.Utils.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -29,8 +29,6 @@ public class MenuController {
     private int currentPage = 0;
     private int maxPages;
     private int lastPage;
-
-    private String name;
 
     public MenuController(AddonFaction faction) {
         menu = new Menu(formatTitle(), size);
