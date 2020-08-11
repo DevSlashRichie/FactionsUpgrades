@@ -199,7 +199,8 @@ public class ItemBuilder {
         if(section.contains("item")) {
 
             try {
-                material = Material.getMaterial(section.getString("item"));
+                Material m = Material.getMaterial(section.getString("item").toUpperCase());
+                material = m != null ? m : Material.BEDROCK;
             } catch (Exception e) {
                 log.warning("Item " + section.getString("item") + " not found in: \"" + section.getName() + "\"");
             }

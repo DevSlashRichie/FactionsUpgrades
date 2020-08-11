@@ -7,6 +7,7 @@ import io.github.ricardormdev.factionsupgrades.Menu.MenuItem;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonConfiguration;
 import io.github.ricardormdev.factionsupgrades.Modules.Tier;
+import io.github.ricardormdev.factionsupgrades.Utils.EconomyUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -23,59 +24,104 @@ public class MenuController {
     private Menu menu;
     private AddonFaction faction;
 
-    private final String name = "&6&lFaction Addons";
     private final int size = 6;
 
+    private int currentPage = 0;
+    private int maxPages;
+    private int lastPage;
+
+    private String name;
+
     public MenuController(AddonFaction faction) {
-        menu = new Menu(name, size);
+        menu = new Menu(formatTitle(), size);
         this.faction = faction;
+        this.maxPages = (int) Math.ceil(FactionsUpgrades.getInstance().getAddonHandler().getAddons().size() / 5D);
+        this.lastPage = maxPages - 1;
 
         setupControllers();
-        createPage(0);
+        createPage(currentPage);
+    }
+
+    public String formatTitle() {
+        String name = "&9&lFaction Addons | Page " + currentPage();
+        name = (name.length() > 32 ? name.substring(0, 31) : name);
+        return name;
     }
 
     public void redraw(Player player) {
-        menu = new Menu(name, size);
+        menu = new Menu(formatTitle(), size);
         setupControllers();
-        createPage(0);
+        createPage(currentPage);
         menu.open(player);
     }
 
     public void setupControllers() {
-        menu.addItem(49, new MenuItem(ItemBuilder.of(Material.BARRIER), click -> {
+        menu.addItem(49, new MenuItem(ItemBuilder.of(Material.BARRIER, "&cClose Menu"), click -> {
             click.getEvent().getWhoClicked().closeInventory();
             return true;
         }));
+
+        if(maxPages > 1 && currentPage != lastPage) {
+            menu.addItem(50, new MenuItem(ItemBuilder.of(Material.ARROW, "&aNext Page", "&ePage " + (currentPage()+1)), click -> {
+                currentPage++;
+                redraw((Player) click.getEvent().getWhoClicked());
+                return true;
+            }));
+        } else if(currentPage != 0) {
+            menu.addItem(48, new MenuItem(ItemBuilder.of(Material.ARROW, "&aPrevious Page", "&ePage " + (currentPage()-1)), click -> {
+                currentPage--;
+                redraw((Player) click.getEvent().getWhoClicked());
+                return true;
+            }));
+        }
     }
 
     private void createPage(int i) {
         int initialPosition = i * 5;
 
+        int indexer = 0;
         for (int line = initialPosition; line < initialPosition+5; line++) {
-            int j = line * 9;
+            int j = indexer * 9;
             List<AddonConfiguration> configs = new ArrayList<>(FactionsUpgrades.getInstance().getAddonHandler().geConfigAddons());
             if(configs.size() >= line+1) {
                 for (WorkingTier tier : getLine(configs.get(line))) {
                     int finalLine = line;
                     menu.addItem(j, new MenuItem(tier.getItem(), click -> {
+                        Player player = (Player) click.getEvent().getWhoClicked();
                         AddonConfiguration addonConfiguration = configs.get(finalLine);
                         if(!tier.isHas()) {
                             Tier t = tier.getTier();
                             Addon ft = faction.getAddon(addonConfiguration.getId());
+
+                            int totalSum = 0;
+                            for (int k = 0; k < tier.getTier().getLevel(); k++) {
+                                totalSum += addonConfiguration.getTier(k+1).getCost();
+                            }
+
                             if(ft == null) {
-                                faction.addAddon(addonConfiguration.newAddon(faction.getFaction(), t));
-                                click.getEvent().getWhoClicked()
-                                        .sendMessage("You got " + ChatColor.translateAlternateColorCodes('&', configs.get(finalLine).getDisplayName()));
+                                if(EconomyUtils.withdrawPlayer(player, totalSum) != null) {
+                                    faction.addAddon(addonConfiguration.newAddon(faction.getFaction(), t));
+                                    click.getEvent().getWhoClicked()
+                                            .sendMessage("You got " + ChatColor.translateAlternateColorCodes('&', configs.get(finalLine).getDisplayName()));
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "You can't afford this.");
+                                }
                             } else {
-                                ft.setTier(t);
+                                if(EconomyUtils.withdrawPlayer(player, totalSum) != null) {
+                                    ft.setTier(t);
+                                } else {
+                                    player.sendMessage(ChatColor.RED + "You can't afford this.");
+                                }
                             }
                         }
-                        redraw((Player) click.getEvent().getWhoClicked());
+
+                        redraw(player);
                         return true;
                     }));
                     j++;
                 }
             }
+            indexer++;
         }
 
     }
@@ -96,6 +142,10 @@ public class MenuController {
         }
 
         return line;
+    }
+
+    private int currentPage() {
+        return currentPage+1;
     }
 
 

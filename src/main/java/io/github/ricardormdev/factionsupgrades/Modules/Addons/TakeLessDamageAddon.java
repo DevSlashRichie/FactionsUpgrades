@@ -1,5 +1,7 @@
 package io.github.ricardormdev.factionsupgrades.Modules.Addons;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonData;
@@ -23,8 +25,10 @@ public class TakeLessDamageAddon extends Addon {
         public void playerTakeDamageEvent(EntityDamageByEntityEvent e) {
             if(e.getEntity() instanceof Player) {
                 Player player = (Player) e.getEntity();
+                FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+                Faction faction = fPlayer.getFaction();
 
-                if(!playerIsInFaction(player))
+                if(getFaction() != faction || !playerIsInFaction(player))
                     return;
 
                 double newDamge = e.getFinalDamage() - (e.getFinalDamage() * getTier().getMultiplier() / 100);

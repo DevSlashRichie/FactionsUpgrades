@@ -1,5 +1,7 @@
 package io.github.ricardormdev.factionsupgrades.Modules.Addons;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonData;
@@ -23,8 +25,10 @@ public class DoMoreDamageAddon extends Addon {
         public void playerDamageEvent(EntityDamageByEntityEvent e) {
             if(e.getDamager() instanceof Player) {
                 Player player = (Player) e.getDamager();
+                FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+                Faction faction = fPlayer.getFaction();
 
-                if(!playerIsInFaction(player))
+                if (getFaction() != faction && !playerIsInFaction(player))
                     return;
 
                 double newDamge = e.getFinalDamage() * getTier().getMultiplier();

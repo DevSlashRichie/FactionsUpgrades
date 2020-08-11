@@ -1,15 +1,15 @@
 package io.github.ricardormdev.factionsupgrades.Modules;
 
 import io.github.ricardormdev.factionsupgrades.FactionsUpgrades;
-import io.github.ricardormdev.factionsupgrades.Modules.Addons.DoMoreDamageAddon;
-import io.github.ricardormdev.factionsupgrades.Modules.Addons.FlyAddon;
-import io.github.ricardormdev.factionsupgrades.Modules.Addons.TakeLessDamageAddon;
+import io.github.ricardormdev.factionsupgrades.Modules.Addons.*;
 import io.github.ricardormdev.factionsupgrades.SettingsManager;
 import io.github.ricardormdev.factionsupgrades.Utils.ItemBuilder;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AddonHandler {
@@ -32,6 +32,12 @@ public class AddonHandler {
         addons.add(FlyAddon.class);
         addons.add(DoMoreDamageAddon.class);
         addons.add(TakeLessDamageAddon.class);
+        addons.add(BiggerTntVaultAddon.class);
+        addons.add(BiggerVaultAddon.class);
+        addons.add(CropGrowthAddon.class);
+        addons.add(SpawnerSpeedAddon.class);
+        addons.add(XPBoosterAddon.class);
+        addons.add(MoreMemberAddon.class);
     }
 
 

@@ -36,7 +36,10 @@ public class AddonConfiguration {
 
     @SneakyThrows
     public Addon newAddon(Faction faction, Tier tier) {
-        return (Addon) addonInterface.getConstructors()[0].newInstance(id, faction, tier);
+        Addon addon = (Addon) addonInterface.getConstructors()[0].newInstance(id, faction, tier);
+        addon.setConfiguration(this);
+        addon.registerListener();
+        return addon;
     }
 
     public ItemStack createItemStack() {

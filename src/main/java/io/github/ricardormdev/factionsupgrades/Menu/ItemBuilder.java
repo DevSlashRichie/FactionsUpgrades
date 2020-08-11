@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -49,6 +50,13 @@ public class ItemBuilder {
 
     public static ItemStack of(Material material) {
         return new ItemBuilder().setMaterial(material).setQuantity(1).build();
+    }
+    public static ItemStack of(Material material, String text, String... lore) {
+        ItemBuilder itemBuilder =  new ItemBuilder().setMaterial(material).setQuantity(1)
+                .setDisplayName(text);
+        if(lore != null && lore.length > 0)
+            itemBuilder.setLore(Arrays.asList(lore));
+        return itemBuilder.build();
     }
 
     /**

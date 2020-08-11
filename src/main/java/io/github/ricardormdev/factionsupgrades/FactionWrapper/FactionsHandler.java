@@ -23,6 +23,7 @@ public class FactionsHandler {
         addonFactions = new HashSet<>();
 
         loadFactions();
+        activateListeners();
     }
 
     @SneakyThrows
@@ -44,9 +45,11 @@ public class FactionsHandler {
                         AddonConfiguration addonConfiguration = FactionsUpgrades.getInstance().getAddonHandler().getAddon(addonId);
 
                         if(addonConfiguration != null) {
-                            addonFaction.addAddon((Addon) addonConfiguration.getAddonInterface()
+                            Addon addon = (Addon) addonConfiguration.getAddonInterface()
                                     .getConstructors()[0]
-                                    .newInstance(addonId, faction, addonConfiguration.getTier(tier)));
+                                    .newInstance(addonId, faction, addonConfiguration.getTier(tier));
+                            addon.setConfiguration(addonConfiguration);
+                            addonFaction.addAddon(addon);
                         }
 
                     }
@@ -70,6 +73,10 @@ public class FactionsHandler {
                     addonFactions.add(addonFaction);
                     return addonFaction;
                 });
+    }
+
+    public void activateListeners() {
+        addonFactions.forEach(AddonFaction::activateAddons);
     }
 
     public void saveFactions() {

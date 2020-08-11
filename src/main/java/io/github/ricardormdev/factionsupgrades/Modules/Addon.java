@@ -6,12 +6,10 @@ import com.massivecraft.factions.Faction;
 import io.github.ricardormdev.factionsupgrades.FactionsUpgrades;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-@RequiredArgsConstructor
 public abstract class Addon {
 
     @Getter
@@ -32,11 +30,22 @@ public abstract class Addon {
     @Getter
     private Listener listener = null;
 
-    public void run() { }
+    private boolean listenerActivated = false;
+
+    public Addon(final String id, final Faction faction, @NonNull Tier tier) {
+        this.id = id;
+        this.faction = faction;
+        this.tier = tier;
+
+        run();
+    }
+
+    public boolean run () { return false; };
 
     public void registerListener() {
-        if(listener != null) {
+        if(listener != null && !listenerActivated) {
             FactionsUpgrades.getInstance().getServer().getPluginManager().registerEvents(listener, FactionsUpgrades.getInstance());
+            listenerActivated = true;
         }
     }
 

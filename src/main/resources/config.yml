@@ -1,9 +1,19 @@
+TierTemplate:
+  have:
+    displayName: "&aTier {tier}"
+    lore: ["&aYou already have this tier."]
+    item: GREEN_WOOL
+  nothave:
+    displayName: "&cTier {tier}"
+    lore: ["&cYou don't have this tier.", "&cCost: {cost}", "&cMultiplier: {multiplier}"]
+    item: RED_WOOL
+
 Modules:
   faction-fly:
     enabled: true
-    displayName: "Faction fly"
-    description: ["Enable fly in your faction"]
-    icon: STONE
+    displayName: "&bFaction fly"
+    lore: ["&bEnable fly in your faction"]
+    item: QUARTZ
     tiers:
       1:
         multiplier: 1
@@ -13,9 +23,11 @@ Modules:
         cost: 200
   more-damage:
     enabled: true
-    displayName: "More Damage Faction"
-    description: ["Deal more damage inside your faction"]
-    icon: DIAMOND_SWORD
+    displayName: "&6More Damage Faction"
+    lore: ["&eDeal more damage inside your faction"]
+    item: DIAMOND_SWORD
+    enchantments:
+      - SHARPNESS:5
     tiers:
       1:
         multiplier: 1
@@ -29,8 +41,98 @@ Modules:
   less-damage:
     enabled: true
     displayName: "&6Less Damage Faction"
-    description: ["&eTake less damage inside your faction", "&2C:"]
-    icon: SHIELD
+    lore: ["&eTake less damage inside your faction"]
+    item: SHIELD
+    tiers:
+      1:
+        multiplier: 10
+        cost: 100
+      2:
+        multiplier: 15
+        cost: 200
+      3:
+        multiplier: 20
+        cost: 300
+  less-tnt-vault:
+    enabled: true
+    displayName: "&6More TNT"
+    lore: ["&6Increase your TNT Vault"]
+    item: TNT
+    tiers:
+      1:
+        multiplier: 10
+        cost: 100
+      2:
+        multiplier: 15
+        cost: 200
+      3:
+        multiplier: 20
+        cost: 300
+  bigger-vault:
+    enabled: true
+    displayName: "&6More space"
+    lore: ["&6Increase your vault size"]
+    item: ENDER_CHEST
+    tiers:
+      1:
+        multiplier: 10
+        cost: 100
+      2:
+        multiplier: 15
+        cost: 200
+      3:
+        multiplier: 20
+        cost: 300
+  crop-growth:
+    enabled: true
+    displayName: "&6More food"
+    lore: ["&eIncrease you crop growth rate"]
+    item: WHEAT_SEEDS
+    tiers:
+      1:
+        multiplier: 10
+        cost: 100
+      2:
+        multiplier: 15
+        cost: 200
+      3:
+        multiplier: 20
+        cost: 300
+  spawner-speed:
+    enabled: true
+    displayName: "&6More mobs"
+    lore: ["&eIncrease your mob spawner spawning rate"]
+    item: SPAWNER
+    tiers:
+      1:
+        multiplier: 10
+        cost: 100
+      2:
+        multiplier: 15
+        cost: 200
+      3:
+        multiplier: 20
+        cost: 300
+  xp-booster:
+    enabled: true
+    displayName: "&6XP Booster"
+    lore: ["&eGain more XP inside your faction"]
+    item: experience_bottle
+    tiers:
+      1:
+        multiplier: 10
+        cost: 100
+      2:
+        multiplier: 15
+        cost: 200
+      3:
+        multiplier: 20
+        cost: 300
+  more-members:
+    enabled: true
+    displayName: "&6More members"
+    lore: ["&eIncrease your member size"]
+    item: PLAYER_HEAD
     tiers:
       1:
         multiplier: 10

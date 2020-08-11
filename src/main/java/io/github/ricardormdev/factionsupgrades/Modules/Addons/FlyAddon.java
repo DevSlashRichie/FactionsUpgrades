@@ -9,6 +9,7 @@ import io.github.ricardormdev.factionsupgrades.Modules.Tier;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
@@ -23,17 +24,20 @@ public class FlyAddon extends Addon {
         setListener(new FlyAddonListener());
     }
 
+    @Override
+    public void registerListener() {
+        super.registerListener();
+    }
+
     public class FlyAddonListener implements Listener {
 
         @EventHandler
         public void onFlyToggle(PlayerToggleFlightEvent e) {
             Player player = e.getPlayer();
             FPlayer fplayer = FPlayers.getInstance().getByPlayer(player);
+            if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
 
-            if(fplayer == null || fplayer.getFaction() == null) return;
-            if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-
-            if(playerIsInFaction(fplayer)) {
+            if(fplayer.getFaction() == getFaction() && playerIsInFaction(fplayer)) {
                 e.setCancelled(false);
             } else {
                 e.setCancelled(true);
@@ -48,11 +52,14 @@ public class FlyAddon extends Addon {
             if(fplayer == null || fplayer.getFaction() == null) return;
 
             if(!thiz.getFaction().equals(fplayer.getFaction())) return;
+            if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
 
-            if(!playerIsInFaction(fplayer))
-                if(player.getGameMode() != GameMode.CREATIVE || player.getGameMode() != GameMode.SPECTATOR)
-                    if(player.isFlying())
-                        player.setFlying(false);
+            if(!playerIsInFaction(fplayer)) {
+                if (player.isFlying())
+                    player.setFlying(false);
+            } else if(!player.getAllowFlight()) {
+                player.setAllowFlight(true);
+            }
 
         }
 
