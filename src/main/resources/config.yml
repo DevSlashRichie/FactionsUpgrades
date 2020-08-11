@@ -98,6 +98,9 @@ Modules:
       3:
         multiplier: 20
         cost: 300
+      4:
+        multiplier: 99
+        cost: 1000
   spawner-speed:
     enabled: true
     displayName: "&6More mobs"

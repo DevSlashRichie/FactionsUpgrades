@@ -9,5 +9,6 @@ depend:
   - Factions
 commands:
   factionupgrades:
+    aliases: ["fu"]
     description: Main Command
     usage: /factionupgrades

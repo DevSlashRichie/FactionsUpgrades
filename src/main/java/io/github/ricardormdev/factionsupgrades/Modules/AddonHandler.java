@@ -1,5 +1,8 @@
 package io.github.ricardormdev.factionsupgrades.Modules;
 
+import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
+import io.github.ricardormdev.factionsupgrades.FactionWrapper.AddonFaction;
 import io.github.ricardormdev.factionsupgrades.FactionsUpgrades;
 import io.github.ricardormdev.factionsupgrades.Modules.Addons.*;
 import io.github.ricardormdev.factionsupgrades.SettingsManager;
@@ -22,7 +25,6 @@ public class AddonHandler {
         addonConfigurationHashMap = new HashMap<>();
 
         loadModules();
-
         setupConfiguration();
 
         FactionsUpgrades.getInstance().getLog().info(addonConfigurationHashMap.size() + " addons loaded.");
@@ -93,5 +95,21 @@ public class AddonHandler {
 
     public Set<AddonData> getAddonsData() {
         return addons.stream().map(aClass -> aClass.getAnnotation(AddonData.class)).collect(Collectors.toSet());
+    }
+
+    public void loadDefaults() {
+        for (AddonConfiguration value : addonConfigurationHashMap.values()) {
+            Tier tier = value.getTier(0);
+            if(tier == null) continue;
+
+            for (Faction faction : Factions.getInstance().getAllFactions()) {
+                AddonFaction addonFaction = FactionsUpgrades.getInstance().getFactionsHandler().getFaction(faction);
+                if(addonFaction.containsAddonById(value.getId()))
+                    continue;
+
+                Addon addon = value.newAddon(faction, tier);
+                addonFaction.addAddon(addon);
+            }
+        }
     }
 }

@@ -127,18 +127,18 @@ public class MenuController {
     }
 
     private WorkingTier[] getLine(AddonConfiguration addon) {
-        WorkingTier[] line = new WorkingTier[addon.getTiers().size() + 1];
+        WorkingTier[] line = new WorkingTier[addon.getVisibleTiers().size()+1];
 
         line[0] = new WorkingTier(true, addon.createItemStack(), null);
 
-        for (int i = 0; i < addon.getTiers().size(); i++) {
-            Tier tier = addon.getTiers().get(i);
+        for (int i = 0; i < addon.getVisibleTiers().size(); i++) {
+            Tier tier = addon.getVisibleTiers().get(i);
             if(faction.containsAddonById(addon.getId())) {
                 Addon a = faction.getAddon(addon.getId());
                 boolean has = a.getTier().getLevel() >= tier.getLevel();
-                line[i+1] = new WorkingTier(has, addon.getTiers().get(i).createStack(has), tier);
+                line[i+1] = new WorkingTier(has, addon.getVisibleTiers().get(i).createStack(has), tier);
             } else
-                line[i+1] = new WorkingTier(false, addon.getTiers().get(i).createStack(false), tier);
+                line[i+1] = new WorkingTier(false, addon.getVisibleTiers().get(i).createStack(false), tier);
         }
 
         return line;

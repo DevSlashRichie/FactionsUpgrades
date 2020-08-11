@@ -75,6 +75,16 @@ public class FactionsHandler {
                 });
     }
 
+    public AddonFaction getFaction(Faction faction) {
+        return addonFactions.stream().filter(addonFaction -> addonFaction.getFaction().equals(faction))
+                .findFirst()
+                .orElseGet(() -> {
+                    AddonFaction addonFaction = new AddonFaction(faction);
+                    addonFactions.add(addonFaction);
+                    return addonFaction;
+                });
+    }
+
     public void activateListeners() {
         addonFactions.forEach(AddonFaction::activateAddons);
     }

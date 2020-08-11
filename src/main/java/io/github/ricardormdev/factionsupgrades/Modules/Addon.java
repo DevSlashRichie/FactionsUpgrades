@@ -36,7 +36,6 @@ public abstract class Addon {
         this.id = id;
         this.faction = faction;
         this.tier = tier;
-
         run();
     }
 

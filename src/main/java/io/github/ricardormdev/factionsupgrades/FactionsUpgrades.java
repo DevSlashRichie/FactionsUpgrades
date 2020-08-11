@@ -7,12 +7,15 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public final class FactionsUpgrades extends JavaPlugin {
+public final class FactionsUpgrades extends JavaPlugin implements Listener {
 
     @Getter
     private static FactionsUpgrades instance;
@@ -23,6 +26,7 @@ public final class FactionsUpgrades extends JavaPlugin {
     @Getter
     private AddonHandler addonHandler;
 
+    @Getter
     private FactionsHandler factionsHandler;
 
     @Getter
@@ -41,6 +45,10 @@ public final class FactionsUpgrades extends JavaPlugin {
         log.info("Attempting to load addons.");
         addonHandler = new AddonHandler();
         factionsHandler = new FactionsHandler();
+
+        addonHandler.loadDefaults();
+
+        getServer().getPluginManager().registerEvents(this, this);
     }
 
     @Override
@@ -48,11 +56,24 @@ public final class FactionsUpgrades extends JavaPlugin {
         factionsHandler.saveFactions();
     }
 
+    @EventHandler
+    public void listenerForCommand(PlayerCommandPreprocessEvent e) {
+        if(e.getMessage().equalsIgnoreCase("/f upgrade") || e.getMessage().equalsIgnoreCase("/f upgrades")) {
+            MenuController menuController = new MenuController(factionsHandler.getFaction(e.getPlayer()));
+            menuController.getMenu().open(e.getPlayer());
+            e.setCancelled(true);
+        }
+
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        MenuController menuController = new MenuController(factionsHandler.getFaction((Player) sender));
-        menuController.getMenu().open((Player) sender);
+        if(command.getName().equalsIgnoreCase("factionupgrades")) {
+            MenuController menuController = new MenuController(factionsHandler.getFaction((Player) sender));
+            menuController.getMenu().open((Player) sender);
+
+        }
 
         return true;
     }

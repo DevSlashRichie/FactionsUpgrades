@@ -1,15 +1,13 @@
 package io.github.ricardormdev.factionsupgrades.Modules;
 
 import com.massivecraft.factions.Faction;
-import io.github.ricardormdev.factionsupgrades.SettingsManager;
 import io.github.ricardormdev.factionsupgrades.Utils.ItemBuilder;
 import lombok.*;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -32,6 +30,10 @@ public class AddonConfiguration {
 
     public Tier getTier(int i) {
         return tiers.stream().filter(tier -> tier.getLevel() == i).findFirst().orElse(null);
+    }
+
+    public List<Tier> getVisibleTiers() {
+        return tiers.stream().filter(tier -> tier.getLevel() != 0).collect(Collectors.toList());
     }
 
     @SneakyThrows
