@@ -1,0 +1,15 @@
+name: FactionsUpgrades
+version: @version@
+main: io.github.ricardormdev.factionsupgrades.FactionsUpgrades
+api-version: 1.13
+authors: [RicardormDev]
+description: FactionsUpgrades
+website: https://ricardormdev.github.io
+depend:
+  - Factions
+  - Vault
+commands:
+  factionupgrades:
+    aliases: ["fu"]
+    description: Main Command
+    usage: /factionupgrades

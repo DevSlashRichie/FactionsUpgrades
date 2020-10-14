@@ -1,12 +1,27 @@
+#######################################################################################
+#
+# FactionsUpgrades Configuration Schema
+#
+# Author: RicardormDev
+# Website: https://ricardormdev.github.io
+# Discord: Ruich#1867
+#
+#
+# All the tiers marked with 0 are a default value to any Faction
+# You are not forced to use them but it's highly recommended.
+# Each module it's marked with the meaning of their multiplier
+#
+########################################################################################
+
 TierTemplate:
   have:
     displayName: "&aTier {tier}"
     lore: ["&aYou already have this tier."]
-    item: GREEN_WOOL
+    item: lime_stained_glass_pane
   nothave:
     displayName: "&cTier {tier}"
     lore: ["&cYou don't have this tier.", "&cCost: {cost}", "&cMultiplier: {multiplier}"]
-    item: RED_WOOL
+    item: red_stained_glass_pane
 
 Modules:
   faction-fly:
@@ -16,11 +31,8 @@ Modules:
     item: QUARTZ
     tiers:
       1:
-        multiplier: 1
+        multiplier: 0
         cost: 100
-      2:
-        multiplier: 2
-        cost: 200
   more-damage:
     enabled: true
     displayName: "&6More Damage Faction"
@@ -53,12 +65,15 @@ Modules:
       3:
         multiplier: 20
         cost: 300
-  less-tnt-vault:
+  tnt-vault:
     enabled: true
     displayName: "&6More TNT"
     lore: ["&6Increase your TNT Vault"]
     item: TNT
     tiers:
+      0:
+        multiplier: 1
+        cost: 0
       1:
         multiplier: 10
         cost: 100
@@ -74,6 +89,9 @@ Modules:
     lore: ["&6Increase your vault size"]
     item: ENDER_CHEST
     tiers:
+      0:
+        multiplier: 1
+        cost: 0
       1:
         multiplier: 10
         cost: 100
@@ -89,6 +107,9 @@ Modules:
     lore: ["&eIncrease you crop growth rate"]
     item: WHEAT_SEEDS
     tiers:
+      0:
+        multiplier: 0
+        cost: 0
       1:
         multiplier: 10
         cost: 100
@@ -99,8 +120,12 @@ Modules:
         multiplier: 20
         cost: 300
       4:
+        multiplier: 90
+        cost: 50
+      5:
         multiplier: 99
         cost: 1000
+
   spawner-speed:
     enabled: true
     displayName: "&6More mobs"
@@ -137,6 +162,9 @@ Modules:
     lore: ["&eIncrease your member size"]
     item: PLAYER_HEAD
     tiers:
+      0:
+        multiplier: 0
+        cost: 0
       1:
         multiplier: 10
         cost: 100

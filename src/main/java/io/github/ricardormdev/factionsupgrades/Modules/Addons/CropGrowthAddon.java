@@ -2,19 +2,23 @@ package io.github.ricardormdev.factionsupgrades.Modules.Addons;
 
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
-import com.sun.javafx.scene.traversal.Direction;
 import io.github.ricardormdev.factionsupgrades.FactionsUpgrades;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonData;
 import io.github.ricardormdev.factionsupgrades.Modules.Tier;
 import lombok.NonNull;
-import org.bukkit.*;
+import org.bukkit.Chunk;
+import org.bukkit.CropState;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.material.Crops;
+import org.bukkit.material.Directional;
+import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
@@ -82,15 +86,14 @@ public class CropGrowthAddon extends Addon {
                             public void run() {
 
                                 locs.forEach(loc -> {
-                                    if (loc.getBlock().getBlockData() instanceof Ageable) {
-                                        Ageable ageable = (Ageable) loc.getBlock().getState().getBlockData();
-                                        int now = ageable.getAge();
-
+                                    if (loc.getBlock() instanceof Crops) {
+                                        Crops crops = (Crops) loc.getBlock().getState().getData();
+                                        int now = crops.getData();
                                         if(loc.getBlock().getType() == Material.SUGAR_CANE || loc.getBlock().getType() == Material.CACTUS) {
                                             handleCaneAndCactus(loc.getBlock());
-                                        } else if(now != ageable.getMaximumAge()) {
-                                            ageable.setAge(now+1);
-                                            loc.getBlock().setBlockData(ageable, true);
+                                        } else if(now != 0x7) {
+                                            crops.setState(CropState.getByData((byte) (now+1)));
+                                            loc.getBlock().getState().setData(crops);
                                             loc.getBlock().getState().update();
                                         } else if(loc.getBlock().getType() == Material.MELON_STEM || loc.getBlock().getType() == Material.PUMPKIN_STEM) {
                                             if(random.nextInt(100) > 40) {
@@ -148,16 +151,17 @@ public class CropGrowthAddon extends Addon {
 
     private void handleSpecialBlock(Block stem, Block block, Material type) {
         block.setType(type, true);
-        stem.setType(Objects.requireNonNull(Material.getMaterial("ATTACHED_" + type.toString().toUpperCase() + "_STEM")));
+        stem.setType(Objects.requireNonNull(Material.getMaterial(type.toString().toUpperCase() + "_STEM")));
         BlockFace face = stem.getFace(block);
 
         if(face == null)
             return;
 
-        Directional directional = (Directional) stem.getState().getBlockData();
-        directional.setFacing(face);
+        MaterialData materialData = stem.getState().getData();
 
-        stem.setBlockData(directional);
+        Directional directional = (Directional) materialData;
+        directional.setFacingDirection(face);
+
         stem.getState().update();
     }
 
@@ -183,7 +187,7 @@ public class CropGrowthAddon extends Addon {
 
         List<Location> found = blocks.get().filter(block -> {
             Material down = block.getRelative(BlockFace.DOWN).getType();
-            return down == Material.GRASS || down == Material.DIRT || down == Material.FARMLAND;
+            return down == Material.GRASS || down == Material.DIRT || down == Material.SOIL;
         })
         .map(Block::getLocation)
         .collect(Collectors.toList());

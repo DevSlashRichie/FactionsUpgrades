@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FactionsUpgrades.iml" filepath="$PROJECT_DIR$/FactionsUpgrades.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/API/FactionsUpgrades.API.iml" filepath="$PROJECT_DIR$/.idea/modules/API/FactionsUpgrades.API.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FactionsUpgrades.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FactionsUpgrades.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FactionsUpgrades.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FactionsUpgrades.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/API/IdeaProjects.FactionsUpgrades.API.iml" filepath="$PROJECT_DIR$/.idea/modules/API/IdeaProjects.FactionsUpgrades.API.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.ricardormdev.FactionsUpgrades.main.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.ricardormdev.FactionsUpgrades.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/io.github.ricardormdev.FactionsUpgrades.test.iml" filepath="$PROJECT_DIR$/.idea/modules/io.github.ricardormdev.FactionsUpgrades.test.iml" />

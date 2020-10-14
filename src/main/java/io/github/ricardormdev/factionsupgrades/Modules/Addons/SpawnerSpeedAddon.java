@@ -52,7 +52,7 @@ public class SpawnerSpeedAddon extends Addon {
     public boolean run() {
         calculateBlocks();
 
-        locs.stream().filter(location -> location.getBlock().getType() == Material.SPAWNER)
+        locs.stream().filter(location -> location.getBlock().getType() == Material.MOB_SPAWNER)
                 .map(Location::getBlock)
                 .forEach(block -> calculateSpawner(block.getState()));
 
@@ -61,16 +61,8 @@ public class SpawnerSpeedAddon extends Addon {
 
     private void calculateSpawner(BlockState state) {
         CreatureSpawner creatureSpawner = (CreatureSpawner) state;
-        int min = creatureSpawner.getMinSpawnDelay() - (creatureSpawner.getMinSpawnDelay() * getTier().getMultiplier() / 100);
-        int max = creatureSpawner.getMaxSpawnDelay() - (creatureSpawner.getMaxSpawnDelay() * getTier().getMultiplier() / 100);
-
-        min = Math.max(min, 1);
-        max = Math.max(max, min);
-
-        creatureSpawner.setMinSpawnDelay(min);
-        creatureSpawner.setMaxSpawnDelay(max);
-
-        creatureSpawner.setDelay(-1);
+        int delay = creatureSpawner.getDelay() - (creatureSpawner.getDelay() * getTier().getMultiplier() / 100);
+        creatureSpawner.setDelay(delay);
         creatureSpawner.update();
     }
 
@@ -84,7 +76,7 @@ public class SpawnerSpeedAddon extends Addon {
         public void placeBlockEvent(BlockPlaceEvent e) {
             if(containsBlock(e.getBlock().getLocation())) {
                 locs.add(e.getBlock().getLocation());
-                if(e.getBlock().getType() == Material.SPAWNER) {
+                if(e.getBlock().getType() == Material.MOB_SPAWNER) {
                     calculateSpawner(e.getBlock().getState());
                 }
             }

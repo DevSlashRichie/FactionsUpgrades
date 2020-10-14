@@ -1,13 +1,16 @@
 package io.github.ricardormdev.factionsupgrades;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.Faction;
 import io.github.ricardormdev.factionsupgrades.FactionWrapper.AddonFaction;
-import io.github.ricardormdev.factionsupgrades.Menu.ItemBuilder;
 import io.github.ricardormdev.factionsupgrades.Menu.Menu;
 import io.github.ricardormdev.factionsupgrades.Menu.MenuItem;
 import io.github.ricardormdev.factionsupgrades.Modules.Addon;
 import io.github.ricardormdev.factionsupgrades.Modules.AddonConfiguration;
 import io.github.ricardormdev.factionsupgrades.Modules.Tier;
 import io.github.ricardormdev.factionsupgrades.Utils.EconomyUtils;
+import io.github.ricardormdev.factionsupgrades.Utils.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -20,7 +23,6 @@ import java.util.List;
 
 public class MenuController {
 
-    @Getter
     private Menu menu;
     private AddonFaction faction;
 
@@ -29,8 +31,6 @@ public class MenuController {
     private int currentPage = 0;
     private int maxPages;
     private int lastPage;
-
-    private String name;
 
     public MenuController(AddonFaction faction) {
         menu = new Menu(formatTitle(), size);
@@ -43,7 +43,7 @@ public class MenuController {
     }
 
     public String formatTitle() {
-        String name = "&9&lFaction Addons | Page " + currentPage();
+        String name = "Faction Addons | Page " + currentPage();
         name = (name.length() > 32 ? name.substring(0, 31) : name);
         return name;
     }
@@ -93,13 +93,14 @@ public class MenuController {
                             Tier t = tier.getTier();
                             Addon ft = faction.getAddon(addonConfiguration.getId());
 
-                            int totalSum = 0;
-                            for (int k = 0; k < tier.getTier().getLevel(); k++) {
-                                totalSum += addonConfiguration.getTier(k+1).getCost();
-                            }
-
                             if(ft == null) {
-                                if(EconomyUtils.withdrawPlayer(player, totalSum) != null) {
+
+                                if(t.getLevel() != 1) {
+                                    player.sendMessage(ChatColor.RED + "Please get the lower levels first.");
+                                    return true;
+                                }
+
+                                if(EconomyUtils.withdrawPlayer(player, t.getCost()) != null) {
                                     faction.addAddon(addonConfiguration.newAddon(faction.getFaction(), t));
                                     click.getEvent().getWhoClicked()
                                             .sendMessage("You got " + ChatColor.translateAlternateColorCodes('&', configs.get(finalLine).getDisplayName()));
@@ -107,7 +108,13 @@ public class MenuController {
                                     player.sendMessage(ChatColor.RED + "You can't afford this.");
                                 }
                             } else {
-                                if(EconomyUtils.withdrawPlayer(player, totalSum) != null) {
+
+                                if(ft.getTier().getLevel()+1 != t.getLevel()) {
+                                    player.sendMessage(ChatColor.RED + "Please get the lower levels first.");
+                                    return true;
+                                }
+
+                                if(EconomyUtils.withdrawPlayer(player, t.getCost()) != null) {
                                     ft.setTier(t);
                                 } else {
                                     player.sendMessage(ChatColor.RED + "You can't afford this.");
@@ -148,6 +155,21 @@ public class MenuController {
         return currentPage+1;
     }
 
+    public void open(Player player) {
+
+        FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
+
+        if(!fPlayer.hasFaction()) {
+            player.sendMessage(ChatColor.RED + "You are not in any faction.");
+        }
+
+        if (!fPlayer.isInOwnTerritory()) {
+            player.sendMessage(ChatColor.RED + "This command should only be used inside your faction.");
+            return;
+        }
+
+        menu.open(player);
+    }
 
     @Getter
     @AllArgsConstructor

@@ -1,7 +1,7 @@
 package io.github.ricardormdev.factionsupgrades.Modules;
 
-import io.github.ricardormdev.factionsupgrades.Menu.ItemBuilder;
 import io.github.ricardormdev.factionsupgrades.SettingsManager;
+import io.github.ricardormdev.factionsupgrades.Utils.ItemBuilder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 public class Tier {
     private final int level;
     private final int cost;
-    private final int multiplier;
+    private final double multiplier;
 
     private ItemBuilder itemBuilder_HAVE;
     private ItemBuilder itemBuilder_NOTHAVE;
