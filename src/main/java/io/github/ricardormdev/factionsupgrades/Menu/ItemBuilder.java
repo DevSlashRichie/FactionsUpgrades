@@ -203,7 +203,7 @@ public class ItemBuilder {
      */
     @SuppressWarnings("deprecation")
     public ItemStack build() {
-        ItemStack item = new ItemStack(material, quantity, (short) 1);
+        ItemStack item = new ItemStack(material, quantity, (short) 0, data);
         ItemMeta meta = item.getItemMeta();
         if(displayName != null)
             meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));

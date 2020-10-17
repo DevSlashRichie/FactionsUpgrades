@@ -44,7 +44,7 @@ public class MenuController {
 
     public String formatTitle() {
         String name = "&9&lFaction Addons | Page " + currentPage();
-        name = (name.length() > 32 ? name.substring(0, 31) : name);
+        name = name.length() > 32 ? name.substring(0, 31) : name;
         return name;
     }
 
